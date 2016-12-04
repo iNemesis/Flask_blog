@@ -133,7 +133,7 @@ def create_author():
     return render_template('new_author.html')
 
 
-@app.route('/newCategory', methods=["POST","GET"])
+@app.route('/newCategory', methods=["POST", "GET"])
 def create_category():
     if request.method == 'POST':
         if not request.form['category']:
@@ -146,6 +146,10 @@ def create_category():
             return redirect(url_for('show_all_articles'))
     return render_template('new_category.html')
 
+
+@app.route('/test', methods=["POST", "GET"])
+def test():
+    return render_template("test.html", articles=Article.query.all())
 
 def allowed_file(filename):
     return '.' in filename and \
