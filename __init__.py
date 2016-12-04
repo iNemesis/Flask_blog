@@ -68,7 +68,7 @@ def show_all_articles():
 
 @app.route('/article/<key>')
 def get_article(key):
-    return render_template("blog.html",article=Article.query.get(key))
+    return render_template("blog.html", article=Article.query.get(key), categories=Category.query.all())
 
 
 @app.route('/category/<key>')

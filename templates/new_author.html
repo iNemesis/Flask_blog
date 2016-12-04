@@ -5,21 +5,21 @@
     <title>New article</title>
 </head>
 <body>
-    {%- for category, message in get_flashed_messages(with_categories = true) %}
-         <div class = "alert alert-danger">
-            {{ message }}
-         </div>
-      {%- endfor %}
+{%- for category, message in get_flashed_messages(with_categories = true) %}
+    <div class="alert alert-danger">
+        {{ message }}
+    </div>
+{%- endfor %}
 
 
-    <form action="{{ request.path }}" method="post" enctype="multipart/form-data">
-         <label for = "name">Name</label><br>
-         <input type = "text" name = "name" placeholder = "Name" /><br>
-         <label for = "website">Website</label><br>
-         <input type = "text" name = "website" placeholder = "Website" /><br>
-          <label for = "picture">Picture</label><br>
-        <input type="file" name="picture"/><br>
-         <input type = "submit" name = "submit" value = "Submit" />
-      </form>
+<form action="{{ request.path }}" method="post" enctype="multipart/form-data">
+    <label for="name">Name</label><br>
+    <input type="text" name="name" placeholder="Name"/><br>
+    <label for="website">Website</label><br>
+    <input type="text" name="website" placeholder="Website"/><br>
+    <label for="pic">Picture</label><br>
+    <input type="file" name="pic"/><br>
+    <input type="submit" name="submit" value="Submit"/>
+</form>
 </body>
 </html>
