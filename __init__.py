@@ -73,7 +73,7 @@ def get_article(key):
 
 @app.route('/category/<key>')
 def get_category(key):
-    active = key
+    active = int(key)
     categories = Category.query.all()
     articles = Article.query.filter_by(category_id=key).all()
     return render_template("blog.html",categories=categories,articles=articles,active=active)
