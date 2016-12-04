@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New article</title>
+</head>
+<body>
+{%- for category, message in get_flashed_messages(with_categories = true) %}
+    <div class="alert alert-danger">
+        {{ message }}
+    </div>
+{%- endfor %}
+
+<form action="{{ request.path }}" method="post">
+    <label for="title">Title</label><br>
+    <input type="text" name="title" placeholder="Title"/><br>
+    <label for="email">Content</label><br>
+    <input type="text" name="content" placeholder="Content"/><br>
+    <label for="category">Category</label><br>
+    <select name="category">
+        {% for categorie in categories %}
+            <option value="{{ categorie.id }}">{{ categorie.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="author">Author</label><br>
+    <select name="author">
+        {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="source">Source</label><br>
+    <input type="text" name="source" placeholder="Source"/><br>
+    <input type="submit" name="submit" value="Submit"/>
+</form>
+</body>
+</html>
