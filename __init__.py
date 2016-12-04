@@ -1,16 +1,21 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-import datetime
+from werkzeug.utils import secure_filename
+import datetime, os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite3'
 app.config['SECRET_KEY'] = "HiiiiiiiiiMdR"
+app.config['UPLOAD_FOLDER'] = 'assets/pictures'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 db = SQLAlchemy(app)
 
 
 class Article(db.Model):
     id = db.Column('article_id', db.Integer, primary_key=True)
+    resume = db.Column(db.Text)
+    picture = db.Column(db.String(256))
     title = db.Column(db.String(64))
     content = db.Column(db.Text)
     date = db.Column(db.DateTime)
@@ -18,7 +23,7 @@ class Article(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
 
-    def __init__(self, title, content, category, author, source, date=None):
+    def __init__(self, title, content, category, author, source, picture, resume, date=None):
         self.title = title
         self.content = content
         if date is None:
@@ -27,6 +32,8 @@ class Article(db.Model):
         self.category_id = category
         self.author_id = author
         self.source = source
+        self.picture = picture
+        self.resume = resume
 
 
 class Author(db.Model):
@@ -75,14 +82,26 @@ def get_category(key):
 @app.route('/newArticle', methods=["POST","GET"])
 def create_article():
     if request.method == 'POST':
-        if not request.form['title'] or not request.form['content'] or not request.form['category'] or not request.form['author']:
+        print(request.files['pic'])
+        if not request.form['title'] or not request.form['resume'] or not request.form['content'] or not \
+                request.form['category'] or not request.form['author']:
             flash('Please enter all the fields', 'error')
         else:
             if not request.form['source']:
                 source = None
             else:
                 source = request.form['source']
-            article = Article(request.form['title'], request.form['content'], request.form['category'], request.form['author'], source)
+            if not request.files['pic'] or request.files['pic'].filename == '' or not allowed_file(
+                    request.files['pic'].filename):
+                pic = None
+            else:
+                filename = secure_filename(request.files['pic'].filename)
+                request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                print(str(pic))
+
+            article = Article(request.form['title'], request.form['content'], request.form['category'],
+                              request.form['author'], source, pic, request.form['resume'])
 
             db.session.add(article)
             db.session.commit()
@@ -118,6 +137,10 @@ def create_category():
             return redirect(url_for('show_all_articles'))
     return render_template('new_category.html')
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
     db.create_all()
