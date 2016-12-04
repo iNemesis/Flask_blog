@@ -94,11 +94,11 @@ def create_article():
             if not request.files['pic'] or request.files['pic'].filename == '' or not allowed_file(
                     request.files['pic'].filename):
                 pic = None
+                flash('No picture for this article', 'error')
             else:
                 filename = secure_filename(request.files['pic'].filename)
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                print(str(pic))
 
             article = Article(request.form['title'], request.form['content'], request.form['category'],
                               request.form['author'], source, pic, request.form['resume'])
@@ -113,10 +113,19 @@ def create_article():
 @app.route('/newAuthor', methods=["POST","GET"])
 def create_author():
     if request.method == 'POST':
-        if not request.form['name'] or not request.form['website'] or not request.form['picture']:
+        if not request.form['name'] or not request.form['website']:
             flash('Please enter all the fields', 'error')
         else:
-            author = Author(request.form['name'], request.form['website'], request.form['picture'])
+            if not request.files['pic'] or request.files['pic'].filename == '' or not allowed_file(
+                    request.files['pic'].filename):
+                pic = None
+                flash('No picture for this article', 'error')
+            else:
+                filename = secure_filename(request.files['pic'].filename)
+                request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            author = Author(request.form['name'], request.form['website'], pic)
             db.session.add(author)
             db.session.commit()
             flash('Record was successfully added')
