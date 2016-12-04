@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-import datetime, os
+import datetime, os, random
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite3'
@@ -97,6 +97,10 @@ def create_article():
                 flash('No picture for this article', 'error')
             else:
                 filename = secure_filename(request.files['pic'].filename)
+                while os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+                    rand = random.randint(0, 999999)
+                    filename = filename.rsplit('.', 1)[0] + str(rand) + "." + filename.rsplit('.', 1)[1]
+
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
@@ -122,6 +126,10 @@ def create_author():
                 flash('No picture for this article', 'error')
             else:
                 filename = secure_filename(request.files['pic'].filename)
+                while os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
+                    rand = random.randint(0, 999999)
+                    filename = filename.rsplit('.', 1)[0] + str(rand) + "." + filename.rsplit('.', 1)[1]
+
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 

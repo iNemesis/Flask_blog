@@ -1,26 +1,14 @@
 {% extends "layout.html" %}
+{% import "_macros.html" as macros %}
 {% block title %}
     {{ super() }}
 {% endblock %}
 {% block container %}
     {% if article %}
-        <div class="jumbotron">
-            <h1>{{ article.title }}</h1>
-            <p>
-                {{ article.content }}
-            </p>
-        </div>
+        {{ macros.article(article) }}
     {% else %}
         {% for article in articles %}
-            <div class="jumbotron">
-                <h1>{{ article.title|upper }}</h1>
-                <p>
-                    {{ article.content }}
-                </p>
-                <p><a class="btn btn-primary btn-lg" href="{{ url_for('get_article', key=article.id) }}" role="button">Lire
-                    la
-                    suite</a></p>
-            </div>
+            {{ macros.article(article,True) }}
         {% endfor %}
     {% endif %}
 {% endblock %}

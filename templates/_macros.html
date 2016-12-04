@@ -1,0 +1,25 @@
+{% macro input(name, value='', type='text', placeholder='') -%}
+    <label for="{{ name }}"></label><br>
+    <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" placeholder="{{ placeholder }}">
+{%- endmacro %}
+
+{% macro article(article, full=False) %}
+    {% if not full %}
+        <div class="jumbotron">
+            <h1>{{ article.title|upper }}</h1>
+            <p>
+                {{ article.content }}
+            </p>
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h1>{{ article.title|upper }}</h1>
+            <p>
+                {{ article.resume }}
+            </p>
+            <p><a class="btn btn-primary btn-lg" href="{{ url_for('get_article', key=article.id) }}" role="button">Lire
+                la
+                suite</a></p>
+        </div>
+    {% endif %}
+{% endmacro %}
