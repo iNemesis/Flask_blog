@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from markdown import markdown
 import datetime, os, random
 
 app = Flask(__name__)
@@ -103,7 +104,9 @@ def create_article():
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 pic = filename
 
-            article = Article(request.form['title'], request.form['content'], request.form['category'],
+            content = markdown(request.form['content'])
+
+            article = Article(request.form['title'], content, request.form['category'],
                               request.form['author'], source, pic, request.form['resume'])
 
             db.session.add(article)

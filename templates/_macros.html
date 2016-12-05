@@ -12,7 +12,7 @@
             <h1>{{ article.title|upper }}</h1>
             <img src="{{ url_for('uploaded_file',filename=article.picture) }}">
             <p>
-                {{ article.content }}
+                {{ article.content|safe }}
             </p>
         </div>
     {% else %}
