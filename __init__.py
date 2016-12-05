@@ -99,7 +99,7 @@ def create_article():
                 filename = secure_filename(request.files['pic'].filename)
                 while os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
                     rand = random.randint(0, 999999)
-                    filename = filename.rsplit('.', 1)[0] + str(rand) + "." + filename.rsplit('.', 1)[1]
+                    filename = filename.rsplit('.', 1)[0] + '-' + str(rand) + "." + filename.rsplit('.', 1)[1]
 
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -138,7 +138,7 @@ def create_author():
             db.session.commit()
             flash('Record was successfully added')
             return redirect(url_for('show_all_articles'))
-    return render_template('new_author.html')
+    return render_template('new_author.html', categories=Category.query.all())
 
 
 @app.route('/newCategory', methods=["POST", "GET"])
@@ -152,7 +152,7 @@ def create_category():
             db.session.commit()
             flash('Record was successfully added')
             return redirect(url_for('show_all_articles'))
-    return render_template('new_category.html')
+    return render_template('new_category.html', categories=Category.query.all())
 
 
 @app.route('/test', methods=["POST", "GET"])

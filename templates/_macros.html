@@ -1,12 +1,16 @@
-{% macro input(name, value='', type='text', placeholder='') -%}
-    <label for="{{ name }}"></label><br>
-    <input type="{{ type }}" name="{{ name }}" value="{{ value|e }}" placeholder="{{ placeholder }}">
+{% macro input(name, label, type='text', value='', placeholder='') -%}
+    <div class="form-group">
+        <label for="{{ name }}">{{ label }}</label><br>
+        <input type="{{ type }}" name="{{ name }}" class="form-control" value="{{ value|e }}"
+               placeholder="{{ placeholder }}"/><br>
+    </div>
 {%- endmacro %}
 
 {% macro article(article, full=False) %}
     {% if not full %}
         <div class="jumbotron">
             <h1>{{ article.title|upper }}</h1>
+            <img src="{{ article.picture }}">
             <p>
                 {{ article.content }}
             </p>

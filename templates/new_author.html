@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New author</title>
-</head>
-<body>
-{%- for category, message in get_flashed_messages(with_categories = true) %}
-    <div class="alert alert-danger">
-        {{ message }}
-    </div>
-{%- endfor %}
-
-
-<form action="{{ request.path }}" method="post" enctype="multipart/form-data">
-    <label for="name">Name</label><br>
-    <input type="text" name="name" placeholder="Name"/><br>
-    <label for="website">Website</label><br>
-    <input type="text" name="website" placeholder="Website"/><br>
-    <label for="pic">Picture</label><br>
-    <input type="file" name="pic"/><br>
-    <input type="submit" name="submit" value="Submit"/>
-</form>
-</body>
-</html>
+{% extends "layout.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}{{ super() }} - Create author{% endblock %}
+{% block container %}
+    <form action="{{ request.path }}" method="post" enctype="multipart/form-data">
+        {{ macros.input("name","Name") }}
+        {{ macros.input("website","Website") }}
+        {{ macros.input("pic","Picture","file") }}
+        <button type="submit" class="btn btn-default" name="submit">Submit</button>
+    </form>
+{% endblock %}
