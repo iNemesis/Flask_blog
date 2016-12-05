@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% import "_macros.html" as macros %}
-{% block title %}{{ super() }} - Create author{% endblock %}
+{% block title %}{{ super() }} - Create category{% endblock %}
 {% block container %}
     <form action="{{ request.path }}" method="post" enctype="multipart/form-data">
         {{ macros.input("category","Name") }}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import datetime, os, random
@@ -82,7 +82,6 @@ def get_category(key):
 @app.route('/newArticle', methods=["POST","GET"])
 def create_article():
     if request.method == 'POST':
-        print(request.files['pic'])
         if not request.form['title'] or not request.form['resume'] or not request.form['content'] or not \
                 request.form['category'] or not request.form['author']:
             flash('Please enter all the fields', 'error')
@@ -102,7 +101,7 @@ def create_article():
                     filename = filename.rsplit('.', 1)[0] + '-' + str(rand) + "." + filename.rsplit('.', 1)[1]
 
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                pic = filename
 
             article = Article(request.form['title'], request.form['content'], request.form['category'],
                               request.form['author'], source, pic, request.form['resume'])
@@ -131,7 +130,7 @@ def create_author():
                     filename = filename.rsplit('.', 1)[0] + str(rand) + "." + filename.rsplit('.', 1)[1]
 
                 request.files['pic'].save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                pic = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                pic = filename
 
             author = Author(request.form['name'], request.form['website'], pic)
             db.session.add(author)
@@ -158,6 +157,11 @@ def create_category():
 @app.route('/test', methods=["POST", "GET"])
 def test():
     return render_template("test.html", articles=Article.query.all())
+
+
+@app.route('/assets/pictures/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def allowed_file(filename):
     return '.' in filename and \

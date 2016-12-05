@@ -1,40 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New article</title>
-</head>
-<body>
-{%- for category, message in get_flashed_messages(with_categories = true) %}
-    <div class="alert alert-danger">
-        {{ message }}
-    </div>
-{%- endfor %}
+{% extends "layout.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}{{ super() }} - Create article{% endblock %}
+{% block container %}
+    <form action="{{ request.path }}" method="post" enctype="multipart/form-data">
+        {{ macros.input("title","Title") }}
 
-<form action="{{ request.path }}" method="post" enctype="multipart/form-data">
-    <label for="title">Title</label><br>
-    <input type="text" name="title" placeholder="Title"/><br>
-    <label for="email">Content</label><br>
-    <input type="text" name="content" placeholder="Content"/><br>
-    <label for="category">Category</label><br>
-    <select name="category">
-        {% for categorie in categories %}
-            <option value="{{ categorie.id }}">{{ categorie.name }}</option>
-        {% endfor %}
-    </select><br>
-    <label for="author">Author</label><br>
-    <select name="author">
-        {% for author in authors %}
-            <option value="{{ author.id }}">{{ author.name }}</option>
-        {% endfor %}
-    </select><br>
-    <label for="pic">Picture</label><br>
-    <input type="file" name="pic"><br>
-    <label for="resume">Resume</label><br>
-    <input type="text" name="resume" placeholder="Resume"><br>
-    <label for="source">Source</label><br>
-    <input type="text" name="source" placeholder="Source"/><br>
-    <input type="submit" name="submit" value="Submit"/>
-</form>
-</body>
-</html>
+        <label for="content">Content</label><br>
+        <textarea class="form-control" name="content" style="resize: none" rows="4"></textarea><br>
+
+        <label for="category">Category</label><br>
+        <select name="category" class="form-control">
+            {% for categorie in categories %}
+                <option value="{{ categorie.id }}">{{ categorie.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="author">Author</label><br>
+        <select name="author" class="form-control">
+            {% for author in authors %}
+                <option value="{{ author.id }}">{{ author.name }}</option>
+            {% endfor %}
+        </select><br>
+
+        {{ macros.input("pic","Picture","file") }}
+        {{ macros.input("resume","Resume") }}
+        {{ macros.input("source","Source") }}
+        <button type="submit" class="btn btn-default" name="submit">Submit</button>
+    </form>
+{% endblock %}

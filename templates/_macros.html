@@ -6,11 +6,11 @@
     </div>
 {%- endmacro %}
 
-{% macro article(article, full=False) %}
+{% macro article(article, full=False) -%}
     {% if not full %}
         <div class="jumbotron">
             <h1>{{ article.title|upper }}</h1>
-            <img src="{{ article.picture }}">
+            <img src="{{ url_for('uploaded_file',filename=article.picture) }}">
             <p>
                 {{ article.content }}
             </p>
@@ -26,4 +26,4 @@
                 suite</a></p>
         </div>
     {% endif %}
-{% endmacro %}
+{%- endmacro %}
