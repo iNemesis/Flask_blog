@@ -4,10 +4,14 @@ from werkzeug.utils import secure_filename
 from markdown import markdown
 import datetime, os, random
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
+os.makedirs(os.path.join("assets", "pictures"), exist_ok=True)
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite3'
 app.config['SECRET_KEY'] = "HiiiiiiiiiMdR"
-app.config['UPLOAD_FOLDER'] = 'assets/pictures'
+app.config['UPLOAD_FOLDER'] = os.path.join(PATH, "assets", "pictures")
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 db = SQLAlchemy(app)

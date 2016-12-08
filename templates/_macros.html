@@ -10,7 +10,9 @@
     {% if not full %}
         <div class="jumbotron">
             <h1>{{ article.title|upper }}</h1>
-            <img src="{{ url_for('uploaded_file',filename=article.picture) }}">
+            {% if article.picture %}
+                <img src="{{ url_for('uploaded_file',filename=article.picture) }}">
+            {% endif %}
             <p>
                 {{ article.content|safe }}
             </p>
