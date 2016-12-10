@@ -41,9 +41,9 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <form class="navbar-form">
+                <form class="navbar-form" method="post" action="{{ url_for("search") }}">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Rechercher">
+                        <input type="text" name="search" class="form-control" placeholder="Rechercher">
                     </div>
                     <button type="submit" class="btn btn-default">OK</button>
                 </form>

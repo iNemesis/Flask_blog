@@ -1,12 +1,15 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from werkzeug.utils import secure_filename
 from markdown import markdown
 import datetime, os, random
 
+# todo: page logging pour acceder aux new author, category, article...
+# todo: panel administrateur
 PATH = os.path.abspath(os.path.dirname(__file__))
 
-os.makedirs(os.path.join("assets", "pictures"), exist_ok=True)
+os.makedirs(os.path.join(PATH, "assets", "pictures"), exist_ok=True)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.sqlite3'
@@ -66,7 +69,7 @@ class Category(db.Model):
 @app.route('/')
 def show_all_articles():
     active=None
-    articles = Article.query.all()
+    articles = Article.query.order_by(Article.date.desc()).all()
     categories = Category.query.all()
     return render_template("blog.html",articles=articles,categories=categories,active=active)
 
@@ -161,6 +164,21 @@ def create_category():
     return render_template('new_category.html', categories=Category.query.all())
 
 
+@app.route('/search', methods=["POST", "GET"])
+def search():
+    if request.method == "POST" and request.form['search']:
+        search = request.form['search']
+        articles = Article.query.filter(or_(Article.title.like("%" + search + "%"),
+                                            Article.resume.like("%" + search + "%"),
+                                            Article.content.like("%" + search + "%"))). \
+            order_by(Article.date.desc()).all()
+        if len(articles) <= 0:
+            flash('Aucun article ne correspond à votre recherche.', 'error')
+            return redirect(url_for("show_all_articles"))
+        return render_template("blog.html", articles=articles, categories=Category.query.all())
+    return redirect(url_for("show_all_articles"))
+
+
 @app.route('/test', methods=["POST", "GET"])
 def test():
     return render_template("test.html", articles=Article.query.all())
@@ -171,8 +189,7 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
     db.create_all()
