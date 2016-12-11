@@ -1,0 +1,10 @@
+.image-resizer {
+    background-size: cover;
+    width: 200px;
+    height: 124px;
+}
+
+.author_header {
+    line-height: 34px;
+    font-size: 24px;
+}

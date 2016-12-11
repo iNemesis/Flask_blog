@@ -7,6 +7,8 @@ import datetime, os, random
 
 # todo: page logging pour acceder aux new author, category, article...
 # todo: panel administrateur
+# todo: ranger les auteurs et les catégories dans deux sections différentes du menu
+# todo: page affichant tous les articles d'un auteur
 PATH = os.path.abspath(os.path.dirname(__file__))
 
 os.makedirs(os.path.join(PATH, "assets", "pictures"), exist_ok=True)
@@ -83,7 +85,7 @@ def get_article(key):
 def get_category(key):
     active = int(key)
     categories = Category.query.all()
-    articles = Article.query.filter_by(category_id=key).all()
+    articles = Article.query.filter_by(category_id=key).order_by(Article.date.desc()).all()
     return render_template("blog.html",categories=categories,articles=articles,active=active)
 
 
@@ -181,15 +183,34 @@ def search():
 
 @app.route('/test', methods=["POST", "GET"])
 def test():
-    return render_template("test.html", articles=Article.query.all())
+    return render_template("test.html", articles=Article.query.order_by(Article.date.desc()).all(),
+                           author=Author.query.all(), categories=Category.query.all())
 
 
 @app.route('/assets/pictures/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.context_processor
+def utility_author():
+    def get_obj_author(id):
+        return Author.query.get(id)
+
+    return dict(get_obj_author=get_obj_author)
+
+
+@app.context_processor
+def utility_category():
+    def get_obj_category(id):
+        return Category.query.get(id)
+
+    return dict(get_obj_category=get_obj_category)
+
 
 if __name__ == '__main__':
     db.create_all()

@@ -5,22 +5,70 @@
 {% block container %}
     {% if article %}
         <div class="jumbotron">
-            <h1>{{ article.title }}</h1>
+            <h1 class="bg-success">{{ article.title }}</h1>
             <p>
                 {{ article.content }}
             </p>
         </div>
     {% else %}
         {% for article in articles %}
-            <div class="jumbotron">
-                <h1>{{ article.title|upper }}</h1>
-                <p>
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="author_header" href="#">{{ get_obj_author(article.author_id).name }}</a>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        {% if article.picture %}
+                            <div class="media-left">
+                                <a href="{{ url_for('uploaded_file',filename=article.picture) }}">
+                                    <img class="media-object image-resizer"
+                                         src="{{ url_for('uploaded_file', filename=article.picture) }}"
+                                         alt="{{ article.title }}">
+                                </a>
+                            </div>
+                        {% endif %}
+                        <div class="media-body">
+                            <h4 class="media-heading">{{ article.title|capitalize }}</h4>
+                            {{ article.content|safe }}
+                            <div class="clearfix"></div>
+                            <!--
+                            <div class="btn-group" role="group" id="BegeniButonlari">
+                                <button type="button" class="btn btn-default"><span
+                                        class="glyphicon glyphicon-thumbs-up"></span></button>
+                                <button type="button" class="btn btn-default"><span
+                                        class="glyphicon glyphicon-thumbs-down"></span></button>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="media">
+                        <a href="{{ article.source }}">Source</a> | <a
+                            href="{{ url_for("get_category", key=article.category_id) }}">{{ get_obj_category(article.category.id).name }}</a>
+                        <div class="pull-right">
+                            Article créé le {{ article.date|string|truncate(length=10,end="") }}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--
+
+            <div style="background-color: gainsboro">
+                <p style="color: cornflowerblue; font-size: 25px; padding-left: 8px; margin-bottom: 0px; height: 42px">{{ article.title|upper }}</p>
+                <hr style="margin-top: 2px;margin-bottom: 2px;">
+                <p style="padding-left: 2em;padding-top: 1em;">
                     {{ article.content }}
                 </p>
-                <p><a class="btn btn-primary btn-lg" href="{{ url_for('get_article', key=article.id) }}" role="button">Lire
+                <p><p>source</p></p>
+                <p><a class="btn btn-primary btn-block" href="{{ url_for('get_article', key=article.id) }}" role="button">Lire
                     la
                     suite</a></p>
-            </div>
+            </div>-->
         {% endfor %}
     {% endif %}
 {% endblock %}
